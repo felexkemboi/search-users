@@ -1,11 +1,11 @@
-import { createWebHistory, createRouter } from "vue-router";
-import Users from "@/views/Users.vue";
+import { createWebHistory, createRouter } from 'vue-router';
+import GithubUsers from '../views/Users.vue';
 
 const routes = [
   {
-    path: "/",
-    name: "users",
-    component: Users,
+    path: '/',
+    name: 'users',
+    component: GithubUsers,
   },
 ];
 
