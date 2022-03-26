@@ -60,3 +60,44 @@
     dark:hover:bg-gray-700
     dark:hover:text-white
 }
+
+.buttons {
+    @apply
+    flex 
+    space-x-2
+    space-y-4
+    flex-wrap
+    justify-center
+    items-baseline
+}
+
+.li {
+    @apply 
+    bg-gray-200
+}
+
+.details {
+    @apply
+    p-2 
+    text-center
+}
+
+.name {
+    @apply
+    p-5
+    text-center
+}
+
+.home {
+    @apply 
+    mx-4
+    flex
+    flex-col
+    p-4
+    text-center
+    items-center
+}
+.title {
+    @apply
+    text-2xl
+}

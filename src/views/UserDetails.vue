@@ -27,26 +27,18 @@
 </template>
 <script>
 import axios from 'axios';
+import { ref, onMounted, watch } from 'vue';
 
 export default {
   name: 'UserDetails',
   props: ['name'],
-  data() {
-    return {
-      user: {},
-      loading: true,
-    };
-  },
-  watch: {
-    name() {
-      this.getUser();
-    },
-  },
-  methods: {
-    redirect() {
-      window.location.href = `https://api.github.com/users/${this.name}`;
-    },
-    async getUser() {
+  setup(props) {
+    const user = ref({});
+    const loading = ref(true);
+
+    const details = () => { window.location.href = `https://api.github.com/users/${this.name}`; };
+
+    const getUser = async () => {
       await axios.get(`https://api.github.com/users/${this.name}`, { headers: { Authorization: 'token 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' } })
         .then((response) => {
           this.loading = true;
@@ -57,10 +49,21 @@ export default {
           // eslint-disable-next-line no-console
           console.error(error);
         });
-    },
-  },
-  async created() {
-    this.getUser();
+    };
+
+    watch(props.name, () => {
+      this.getUser();
+    });
+
+    onMounted(() => {
+      this.getUser();
+    });
+    return {
+      user,
+      loading,
+      getUser,
+      details,
+    };
   },
 };
 </script>

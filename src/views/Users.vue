@@ -1,35 +1,36 @@
 <template>
   <div class="home">
-    <div class="mx-4 flex flex-col p-4 text-center items-center">
-      <h1 class="text-2xl">Search Github users</h1>
-      <form class="form">
-          <input  class="input" type="text"   placeholder="Type the name" v-model="search">
-          <button class="btn"   type="button" @click="getUsers">Search</button>
-      </form>
-      <div class="p-5" v-if="users.length">
-          Users found: {{ count }}
-      </div>
-      <ul v-if="users.length" >
-          <div class="users">
-              <li v-for="(user,index) in users" :key="index" class="bg-gray-200">
-                  <div class="p-5 text-center">
-                      {{ user.login }}
-                  </div>
-                  <div class="p-2 text-center">
-                      <user-details :name=user.login />
-                  </div>
-              </li>
-          </div>
-      </ul>
-      <div class="flex space-x-2 space-y-4 flex-wrap justify-center items-baseline">
-        <button @click="previous" :disabled="page<1"  class="btn">Previous</button>
-        <button @click="next"     :disabled="page>10" class="btn">Next</button>
-      </div>
+    <h1 class="title">Search Github users</h1>
+    <form class="form">
+        <input  class="input" type="text"   placeholder="Type the name" v-model="search">
+        <button class="btn"   type="button" @click="getUsers">Search</button>
+    </form>
+    <div class="p-5" v-if="users.length">
+        Users found: {{ count }}
+    </div>
+    <ul v-if="users.length">
+        <div class="users">
+            <li v-for="(user,index) in users" :key="index" class="li">
+                <div class="name">
+                  {{ user.login }}
+                </div>
+                <div class="details">
+                  <user-details  :name="user.login" />
+                </div>
+            </li>
+        </div>
+    </ul>
+    <div v-if="users.length" class="buttons">
+      <button @click="paginate('previous')" class="btn" :class="disablePrevious">Previous</button>
+      <button @click="paginate('next')"     class="btn" :class="disableNext">Next</button>
     </div>
   </div>
 </template>
 
 <script>
+
+import { ref, computed, watch } from 'vue';
+
 import axios from 'axios';
 import UserDetails from './UserDetails.vue';
 
@@ -38,62 +39,52 @@ export default {
   components: {
     UserDetails,
   },
-  data() {
-    return {
-      users: [],
-      count: 0,
-      search: '',
-      page: 1,
-    };
-  },
-  watch: {
-    page() {
-      this.getUsers();
-    },
-  },
-  computed: {
-    disableNext() {
-      return this.count;
-    },
-    disablePrevious() {
-      return this.page <= 1;
-    },
-  },
-  methods: {
-    details(user) {
-      this.$router.push({ name: 'user', params: { user } });
-    },
-    next() {
-      this.page += 1;
-      this.getUsers();
-      // eslint-disable-next-line no-console
-      console.log('response.data.total_count, next next');
-    },
-    previous() {
-      if (this.page > 1) {
+  setup() {
+    const search = ref('');
+    const users = ref([]);
+    const count = ref(0);
+    const page = ref(1);
+
+    const paginate = (value) => {
+      if (value === 'next') {
+        this.page += 1;
+        this.getUsers();
+      } else {
         this.page -= 1;
         this.getUsers();
-        // eslint-disable-next-line no-console
-        console.log('response.data.total_count, previous previos');
-      } else {
-        // eslint-disable-next-line no-alert
-        alert('You are in page 1');
       }
-    },
-    async getUsers() {
-      await axios.get(`https://api.github.com/search/users?q=${this.search}&page=${this.page}&per_page=10`, { headers: { Authorization: 'token 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' } })
-      // page=${this.page}&
+    };
+
+    const getUsers = async () => {
+      await axios.get(`https://api.github.com/search/users?q=${this.search}&page=${this.page}&per_page=12`, { headers: { Authorization: 'token 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' } })
         .then((response) => {
           this.users = response.data.items;
           this.count = response.data.total_count;
-          // eslint-disable-next-line no-console
-          console.log(this.users[0].login);
         })
         .catch((error) => {
         // eslint-disable-next-line no-console
           console.error(error);
         });
-    },
+    };
+
+    const disableNext = computed(() => ((page * 12) >= count ? 'cursor-not-allowed' : ''));
+
+    const disablePrevious = computed(() => (page <= 1 ? 'cursor-not-allowed' : ''));
+
+    watch(page, () => {
+      this.getUsers();
+    });
+
+    return {
+      search,
+      users,
+      count,
+      page,
+      paginate,
+      getUsers,
+      disableNext,
+      disablePrevious,
+    };
   },
 };
 </script>
