@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h1 class="title">Search Github users</h1>
+    <h1 class="title" id="title">Search Github users</h1>
     <form class="form">
         <input  class="input" type="text"   placeholder="Type the name" v-model="search">
         <button class="btn"   type="button" @click="getUsers">Search</button>
