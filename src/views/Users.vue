@@ -47,19 +47,21 @@ export default {
 
     const paginate = (value) => {
       if (value === 'next') {
-        this.page += 1;
-        this.getUsers();
+        page.value += 1;
+        // eslint-disable-next-line no-use-before-define
+        getUsers();
       } else {
-        this.page -= 1;
-        this.getUsers();
+        page.value -= 1;
+        // eslint-disable-next-line no-use-before-define
+        getUsers();
       }
     };
 
     const getUsers = async () => {
-      await axios.get(`https://api.github.com/search/users?q=${this.search}&page=${this.page}&per_page=12`, { headers: { Authorization: 'token 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' } })
+      await axios.get(`https://api.github.com/search/users?q=${search.value}&page=${page.value}&per_page=12`, { headers: { Authorization: 'token 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' } })
         .then((response) => {
-          this.users = response.data.items;
-          this.count = response.data.total_count;
+          users.value = response.data.items;
+          count.value = response.data.total_count;
         })
         .catch((error) => {
         // eslint-disable-next-line no-console
@@ -72,7 +74,7 @@ export default {
     const disablePrevious = computed(() => (page <= 1 ? 'cursor-not-allowed' : ''));
 
     watch(page, () => {
-      this.getUsers();
+      getUsers();
     });
 
     return {

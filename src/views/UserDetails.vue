@@ -27,7 +27,9 @@
 </template>
 <script>
 import axios from 'axios';
-import { ref, onMounted, watch } from 'vue';
+import {
+  ref, onMounted, watch,
+} from 'vue';
 
 export default {
   name: 'UserDetails',
@@ -36,14 +38,15 @@ export default {
     const user = ref({});
     const loading = ref(true);
 
-    const details = () => { window.location.href = `https://api.github.com/users/${this.name}`; };
+    const details = () => { window.location.href = `https://api.github.com/users/${props.name}`; };
 
     const getUser = async () => {
-      await axios.get(`https://api.github.com/users/${this.name}`, { headers: { Authorization: 'token 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' } })
+      // eslint-disable-next-line no-restricted-globals
+      await axios.get(`https://api.github.com/users/${props.name}`, { headers: { Authorization: 'token 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' } })
         .then((response) => {
-          this.loading = true;
-          this.user = response.data;
-          this.loading = false;
+          loading.value = true;
+          user.value = response.data;
+          loading.value = false;
         })
         .catch((error) => {
           // eslint-disable-next-line no-console
@@ -51,12 +54,23 @@ export default {
         });
     };
 
-    watch(props.name, () => {
-      this.getUser();
+    // watch(props.name, () => {
+    // });
+
+    // watchEffect(() =>
+    //   save({
+    //     notes: notes.value,
+    //     notesArePublic: notesArePublic.value,
+    //   })
+    // );
+
+    // watch((props.name) => context.root.$route, () => getUser());
+    watch(() => props.name, () => {
+      getUser();
     });
 
     onMounted(() => {
-      this.getUser();
+      getUser();
     });
     return {
       user,
