@@ -37,22 +37,30 @@ export default {
       loading: true,
     };
   },
+  watch: {
+    name() {
+      this.getUser();
+    },
+  },
   methods: {
     redirect() {
       window.location.href = `https://api.github.com/users/${this.name}`;
     },
+    async getUser() {
+      await axios.get(`https://api.github.com/users/${this.name}`, { headers: { Authorization: 'token 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' } })
+        .then((response) => {
+          this.loading = true;
+          this.user = response.data;
+          this.loading = false;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
+    },
   },
   async created() {
-    await axios.get(`https://api.github.com/users/${this.name}`, { headers: { Authorization: 'token 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' } })
-      .then((response) => {
-        this.loading = true;
-        this.user = response.data;
-        this.loading = false;
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      });
+    this.getUser();
   },
 };
 </script>
