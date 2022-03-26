@@ -1,44 +1,32 @@
 <template>
-    <div class="home">
-        <div class="mx-4 flex flex-col p-4 text-center items-center">
-            <h1 class="text-2xl">Search Github users</h1>
-            <form class="form">
-                <input  class="input" type="text"   placeholder="Type the name" v-model="search">
-                <button class="btn"   type="button" @click="getUsers">Search</button>
-            </form>
-            <div class="p-5" v-if="users.length">
-                Users found: {{ count }}
-            </div>
-            <ul v-if="users.length" >
-                <div class="users">
-                    <li v-for="(user,index) in users" :key="index" class="bg-gray-200">
-                        <div class="p-5 text-center">
-                            {{ user.login }}
-                        </div>
-                        <div class="p-2 text-center">
-                            <user-details :name=user.login />
-                        </div>
-                    </li>
-                </div>
-            </ul>
-            <div v-if="users.length" class="flex flex-row space-y-4">
-              <div>
-                <button
-                  class="btn space-x-2"
-                  type="button"
-                  @click="previous"
-                  :disabled="page<1">Previous
-                </button>
-              </div>
-              <div>
-                <button
-                  class="btn"
-                  type="button"
-                  @click="next">Next</button>
-              </div>
-            </div>
-        </div>
+  <div class="home">
+    <div class="mx-4 flex flex-col p-4 text-center items-center">
+      <h1 class="text-2xl">Search Github users</h1>
+      <form class="form">
+          <input  class="input" type="text"   placeholder="Type the name" v-model="search">
+          <button class="btn"   type="button" @click="getUsers">Search</button>
+      </form>
+      <div class="p-5" v-if="users.length">
+          Users found: {{ count }}
+      </div>
+      <ul v-if="users.length" >
+          <div class="users">
+              <li v-for="(user,index) in users" :key="index" class="bg-gray-200">
+                  <div class="p-5 text-center">
+                      {{ user.login }}
+                  </div>
+                  <div class="p-2 text-center">
+                      <user-details :name=user.login />
+                  </div>
+              </li>
+          </div>
+      </ul>
+      <div class="flex space-x-2 space-y-4 flex-wrap justify-center items-baseline">
+        <button @click="previous" :disabled="page<1"  class="btn">Previous</button>
+        <button @click="next"     :disabled="page>10" class="btn">Next</button>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -78,11 +66,15 @@ export default {
     next() {
       this.page += 1;
       this.getUsers();
+      // eslint-disable-next-line no-console
+      console.log('response.data.total_count, next next');
     },
     previous() {
       if (this.page > 1) {
         this.page -= 1;
         this.getUsers();
+        // eslint-disable-next-line no-console
+        console.log('response.data.total_count, previous previos');
       } else {
         // eslint-disable-next-line no-alert
         alert('You are in page 1');
@@ -95,7 +87,7 @@ export default {
           this.users = response.data.items;
           this.count = response.data.total_count;
           // eslint-disable-next-line no-console
-          console.log(response.data.total_count);
+          console.log(this.users[0].login);
         })
         .catch((error) => {
         // eslint-disable-next-line no-console
