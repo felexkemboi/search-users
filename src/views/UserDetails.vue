@@ -42,7 +42,7 @@ export default {
 
     const getUser = async () => {
       // eslint-disable-next-line no-restricted-globals
-      await axios.get(`https://api.github.com/users/${props.name}`, { headers: { Authorization: 'token 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' } })
+      await axios.get(`https://api.github.com/users/${props.name}?client_id=a18f9351afb2905a618b&client_secret=99218ce6fef8d4200ee9c05d1637365acea1b50d`) // , { headers: { Authorization: 'token 99218ce6fef8d4200ee9c05d1637365acea1b50d' } }
         .then((response) => {
           loading.value = true;
           user.value = response.data;

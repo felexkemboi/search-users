@@ -58,7 +58,7 @@ export default {
     };
 
     const getUsers = async () => {
-      await axios.get(`https://api.github.com/search/users?q=${search.value}&page=${page.value}&per_page=12`, { headers: { Authorization: 'token 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' } })
+      await axios.get(`https://api.github.com/search/users?q=${search.value}&page=${page.value}&per_page=12&client_id=a18f9351afb2905a618b&client_secret=99218ce6fef8d4200ee9c05d1637365acea1b50d`) // , { headers: { Authorization: 'token 99218ce6fef8d4200ee9c05d1637365acea1b50d' } }
         .then((response) => {
           users.value = response.data.items;
           count.value = response.data.total_count;
