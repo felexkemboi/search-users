@@ -58,7 +58,7 @@ export default {
     };
 
     const getUsers = async () => {
-      await axios.get(`https://api.github.com/search/users?q=${search.value}&page=${page.value}&per_page=12`, { headers: { Authorization: 'token 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' } })
+      await axios.get(`https://api.github.com/search/users?q=${search.value}&page=${page.value}&per_page=12`, { headers: { Authorization: 'token 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' } })
         .then((response) => {
           users.value = response.data.items;
           count.value = response.data.total_count;
